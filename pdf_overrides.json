@@ -1,0 +1,9 @@
+{
+  "title": "Orari Bachelor 2026–2027",
+  "rooms": {},
+  "info": {},
+  "_example_for_the_block_without_title_on_page_11": {
+    "rooms": { "p11y82": [ { "room": "G1-K3-A2" } ] },
+    "info":  { "p11y82": "Viti 3, Paraleli 2, Gr. 5, 6, 7, 8" }
+  }
+}

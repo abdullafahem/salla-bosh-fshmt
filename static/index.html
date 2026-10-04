@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="sq">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Salla Bosh</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚪</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F2F3EE; --surface:#FFFFFF; --ink:#1C2326; --muted:#5E676A; --line:#D5D9D0;
+  --free:#1F7A55; --free-soft:#E1F0E8; --lab:#2F4FCB; --lab-soft:#E4E8FA;
+  --busy:#A8AFA6; --busy-soft:#E6E8E2; --now:#D2452F;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Atkinson Hyperlegible", "Segoe UI", system-ui, -apple-system, sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root{--paper:#1A2024;--surface:#222A2F;--ink:#E7EBE4;--muted:#9AA4A6;--line:#34403F;
+    --free:#5CC796;--free-soft:#1F3A30;--lab:#8EA2FF;--lab-soft:#262F55;--busy:#5D6866;--busy-soft:#2A3236;--now:#FF7A62}
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.5 var(--body)}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 18px 64px}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand{font:800 1.35rem/1 var(--display);letter-spacing:-.01em;margin:0}
+.brand small{font:500 .95rem var(--body);color:var(--muted);margin-left:8px;letter-spacing:0}
+.updated{color:var(--muted);font-size:.875rem}
+
+.hero{margin:28px 0 8px}
+.clock{display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap}
+.clock time{font:800 clamp(4.5rem,15vw,9rem)/.85 var(--display);letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+.clock .summary{padding-bottom:.6rem;max-width:34ch}
+.summary strong{font:800 1.6rem/1.1 var(--display);display:block}
+.summary span{color:var(--muted)}
+
+.weeknav{display:flex;align-items:center;gap:6px;margin:22px 0 14px;flex-wrap:wrap}
+.weeknav .arrow{font:700 1rem var(--body);width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.weeknav .arrow:disabled{opacity:.35;cursor:default}
+.days{display:flex;gap:6px;flex-wrap:wrap}
+.days button,.seg button{font:700 .9rem var(--body);border:1px solid var(--line);background:var(--surface);color:var(--ink);
+  padding:7px 13px;border-radius:999px;cursor:pointer;line-height:1.15}
+.days button span{display:block;font:400 .75rem var(--body);opacity:.75}
+.days button[aria-pressed=true],.seg button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.days button.today{box-shadow:inset 0 -3px 0 var(--now)}
+.days button:disabled{opacity:.4;cursor:default}
+.weeklabel{color:var(--muted);font-size:.85rem;margin-left:6px}
+
+.track{position:relative;padding:4px 0 26px}
+.track input[type=range]{width:100%;margin:0;appearance:none;-webkit-appearance:none;background:transparent;height:44px;cursor:pointer;position:relative;z-index:2}
+.track input::-webkit-slider-runnable-track{height:10px;background:var(--line);border-radius:5px}
+.track input::-moz-range-track{height:10px;background:var(--line);border-radius:5px}
+.track input::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;margin-top:-8px;border-radius:50%;background:var(--ink);border:4px solid var(--paper);box-shadow:0 0 0 2px var(--ink)}
+.track input::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--ink);border:4px solid var(--paper);box-shadow:0 0 0 2px var(--ink)}
+.ticks{position:absolute;left:13px;right:13px;bottom:0;height:22px;font-size:.75rem;color:var(--muted)}
+.ticks span{position:absolute;transform:translateX(-50%)}
+.nowmark{position:absolute;top:12px;width:2px;height:26px;background:var(--now);z-index:1;transform:translateX(-1px)}
+.nowbtn{font:700 .9rem var(--body);background:none;border:1px solid var(--now);color:var(--now);padding:6px 12px;border-radius:999px;cursor:pointer}
+
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:22px 0;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.seg{display:flex;gap:6px;flex-wrap:wrap}
+.search{flex:1 1 200px;font:1rem var(--body);padding:9px 14px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink);min-width:0}
+label.toggle{display:flex;gap:8px;align-items:center;font-size:.9rem;color:var(--muted);cursor:pointer}
+
+section.group{margin-top:30px}
+section.group h2{font:800 1.45rem/1.2 var(--display);margin:0 0 4px}
+section.group p.sub{margin:0 0 14px;color:var(--muted);font-size:.9rem}
+h3.bld{font:700 1rem var(--body);margin:18px 0 8px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;align-items:start}
+.room{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--free);border-radius:4px;padding:12px 14px;text-align:left;
+  font:inherit;color:inherit;cursor:pointer;width:100%;display:block}
+.room.busy{border-left-color:var(--busy);opacity:.85}
+.room .close{display:none}
+.room .name{font:800 1.2rem/1.15 var(--display);display:flex;justify-content:space-between;gap:8px;align-items:baseline;overflow-wrap:anywhere}
+.room .floor{font:700 .72rem var(--body);padding:2px 8px;border-radius:999px;background:var(--free-soft);color:var(--free);white-space:nowrap}
+.room.busy .floor{background:var(--busy-soft);color:var(--muted)}
+.room .until{display:block;margin:4px 0 8px;font-size:.92rem}
+.room.busy .until{color:var(--muted)}
+.room .labnote{display:inline-block;font-size:.8rem;margin:0 0 8px;padding:2px 8px;border-radius:999px;background:var(--lab-soft);color:var(--lab);font-weight:700}
+.bar{position:relative;display:block;height:8px;background:var(--free-soft);border-radius:4px;overflow:hidden}
+.bar i{position:absolute;top:0;bottom:0;background:var(--busy)}
+.bar i.lab{background:repeating-linear-gradient(135deg,var(--lab) 0 2px,transparent 2px 5px);opacity:.7}
+.bar b{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--now)}
+.detail{display:none;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:.88rem}
+.room[aria-expanded=true] .detail{display:block}
+.detail .row{display:block;padding:5px 0}
+.detail .t{font-weight:700;font-variant-numeric:tabular-nums}
+.detail .m{color:var(--muted)}
+.tag{display:inline-block;font:700 .7rem var(--body);padding:1px 7px;border-radius:999px;background:var(--busy-soft);color:var(--muted);margin-left:4px;vertical-align:1px}
+.tag.lab{background:var(--lab-soft);color:var(--lab)}
+.empty{padding:22px;border:1px dashed var(--line);border-radius:4px;color:var(--muted)}
+.notice{padding:14px 18px;border-radius:4px;background:var(--surface);border:1px solid var(--line);margin-top:18px;font-size:.92rem}
+.notice h2{font:800 1.3rem var(--display);margin:0 0 6px}
+:focus-visible{outline:3px solid var(--lab);outline-offset:2px}
+@media (max-width:560px){
+  .clock{gap:6px}.summary{padding-bottom:0}
+  .grid{grid-template-columns:1fr}
+  /* an opened card fills the screen */
+  .room[aria-expanded=true]{position:fixed;inset:0;z-index:50;margin:0;border-radius:0;border-width:0 0 0 6px;opacity:1;overflow-y:auto;
+    overscroll-behavior:contain;padding:calc(18px + env(safe-area-inset-top,0px)) 18px calc(28px + env(safe-area-inset-bottom,0px))}
+  .room[aria-expanded=true] .name{font-size:1.7rem;padding-right:48px}
+  .room[aria-expanded=true] .until{font-size:1.05rem}
+  .room[aria-expanded=true] .detail{font-size:1rem}
+  .room[aria-expanded=true] .detail .row{padding:9px 0;border-bottom:1px solid var(--line)}
+  .room[aria-expanded=true] .close{display:flex;align-items:center;justify-content:center;position:fixed;z-index:51;
+    top:calc(12px + env(safe-area-inset-top,0px));right:12px;width:40px;height:40px;border-radius:50%;
+    background:var(--paper);border:1px solid var(--line);font-size:1.1rem}
+  body:has(.room[aria-expanded=true]){overflow:hidden}
+  .days button{padding:6px 10px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1 class="brand">Salla Bosh <small id="title"></small></h1>
+    <div class="updated" id="updated">Duke ngarkuar orarin…</div>
+  </header>
+
+  <main id="app" hidden>
+    <section class="hero" aria-label="Zgjidh datën dhe orën">
+      <div class="clock">
+        <time id="clock">--:--</time>
+        <div class="summary" id="summary" aria-live="polite"></div>
+      </div>
+      <div class="weeknav">
+        <button class="arrow" id="prevWeek" type="button" aria-label="Java e kaluar">‹</button>
+        <div class="days" id="days" role="group" aria-label="Dita"></div>
+        <button class="arrow" id="nextWeek" type="button" aria-label="Java tjetër">›</button>
+        <span class="weeklabel" id="weeklabel"></span>
+      </div>
+      <div class="track">
+        <input type="range" id="slider" step="5" aria-label="Ora">
+        <div class="nowmark" id="nowmark" hidden></div>
+        <div class="ticks" id="ticks" aria-hidden="true"></div>
+      </div>
+      <button class="nowbtn" id="nowbtn" type="button">Kthehu te tani</button>
+      <div id="rangeNote"></div>
+    </section>
+
+    <div class="controls">
+      <div class="seg" id="bldFilter" role="group" aria-label="Godina"></div>
+      <input class="search" id="search" type="search" placeholder="Kërko, p.sh. Kati 2 ose Auditori 3" aria-label="Kërko auditorin">
+      <label class="toggle"><input type="checkbox" id="showBusy" checked> Shfaq edhe të zënat</label>
+    </div>
+
+    <div id="results"></div>
+    <div id="footnote"></div>
+  </main>
+  <div id="msg"></div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const DAYS = ["E hënë","E martë","E mërkurë","E enjte","E premte","E shtunë","E diel"];
+const DAYS_SHORT = ["Hën","Mar","Mër","Enj","Pre","Sht","Die"];
+const MONTHS = ["jan","shk","mar","pri","maj","qer","korr","gush","sht","tet","nën","dhj"];
+const S = { t:480, date:null, followNow:true, bld:"all", q:"", showBusy:true, open:new Set(), min:480, max:960 };
+
+const fmt = m => String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const fmtDur = m => m>=60 ? `${Math.floor(m/60)} orë${m%60?" "+m%60+" min":""}` : `${m} min`;
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate()+n); return iso(d); };
+const mondayOf = s => { const d = parse(s); return addDays(s, -((d.getDay()+6)%7)); };
+const weekday = s => (parse(s).getDay()+6)%7;
+const nice = s => { const d = parse(s); return `${d.getDate()} ${MONTHS[d.getMonth()]}`; };
+const nowMin = () => { const d = new Date(); return d.getHours()*60+d.getMinutes(); };
+const todayIso = () => iso(new Date());
+
+async function load(){
+  try{
+    const r = await fetch("data.json", {cache:"no-cache"});
+    if(!r.ok) throw new Error(r.status);
+    init(await r.json());
+  }catch(e){
+    $("#msg").innerHTML = `<div class="notice"><h2>Orari nuk u ngarkua</h2><p>Mungon skedari data.json. Krijoje me <code>python pdf_to_json.py ORARI.pdf</code>.</p></div>`;
+    $("#updated").textContent = "";
+  }
+}
+
+function init(data){
+  S.data = data;
+  S.rooms = new Map(data.rooms.map(r => [r.id, r]));
+  S.byDate = new Map();
+  for(const [date, s, e, room, prog, text, type, busy] of data.lessons){
+    if(!S.byDate.has(date)) S.byDate.set(date, new Map());
+    const m = S.byDate.get(date);
+    if(!m.has(room)) m.set(room, []);
+    m.get(room).push({s, e, prog, text, type, busy:!!busy});
+  }
+  for(const m of S.byDate.values()) for(const list of m.values()) list.sort((a,b)=>a.s-b.s);
+  let mn=1440, mx=0; for(const l of data.lessons){ mn=Math.min(mn,l[1]); mx=Math.max(mx,l[2]); }
+  S.min = Math.floor(mn/60)*60; S.max = Math.ceil(mx/60)*60;
+  S.first = data.first_date; S.last = data.last_date;
+
+  $("#title").textContent = data.title || "";
+  const g = new Date(data.generated_at);
+  $("#updated").textContent = `Nga ${data.source}, përditësuar ${g.toLocaleDateString("sq-AL")}`;
+  const blds = [...new Set(data.rooms.map(r=>r.building))].sort();
+  $("#bldFilter").innerHTML = `<button type="button" data-b="all" aria-pressed="true">Të gjitha</button>` +
+    blds.map(b => `<button type="button" data-b="${b}" aria-pressed="false">Godina ${b}</button>`).join("");
+  const sl=$("#slider"); sl.min=S.min; sl.max=S.max;
+  $("#ticks").innerHTML = Array.from({length:(S.max-S.min)/60+1},(_,i)=>S.min+i*60)
+    .map(h=>`<span style="left:${(h-S.min)/(S.max-S.min)*100}%">${h/60}</span>`).join("");
+  if(data.skipped_blocks?.length){
+    $("#footnote").innerHTML = `<div class="notice">Në PDF mungon salla për: ${data.skipped_blocks.map(esc).join(", ")}. Këto orë nuk llogariten derisa të shtohet salla te <code>pdf_overrides.json</code>.</div>`;
+  }
+  $("#app").hidden = false;
+  goNow(); bind(); render();
+  setInterval(()=>{ if(S.followNow){ goNow(); render(); } }, 30000);
+}
+
+function goNow(){
+  S.followNow = true;
+  let d = todayIso(), t = nowMin();
+  if(weekday(d) >= 5){ d = addDays(mondayOf(d), 7); t = S.min; }        // weekend -> next Monday morning
+  else if(t > S.max){ d = weekday(d)===4 ? addDays(d,3) : addDays(d,1); t = S.min; } // evening -> next day
+  if(d < S.first){ d = S.first; t = S.min; }
+  if(d > S.last){ d = S.last; t = S.min; }
+  S.date = d; S.t = Math.min(Math.max(t, S.min), S.max-5);
+}
+
+function bind(){
+  $("#slider").addEventListener("input", e => { S.t=+e.target.value; S.followNow=false; render(); });
+  $("#days").addEventListener("click", e => { const b=e.target.closest("button"); if(!b||b.disabled) return; S.date=b.dataset.d; S.followNow=false; render(); });
+  $("#prevWeek").addEventListener("click", () => { S.date = clampDate(addDays(mondayOf(S.date), -7)); S.followNow=false; render(); });
+  $("#nextWeek").addEventListener("click", () => { S.date = clampDate(addDays(mondayOf(S.date), 7)); S.followNow=false; render(); });
+  $("#nowbtn").addEventListener("click", () => { goNow(); render(); });
+  $("#bldFilter").addEventListener("click", e => { const b=e.target.closest("button"); if(!b) return; S.bld=b.dataset.b;
+    $("#bldFilter").querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed", x===b)); render(); });
+  $("#search").addEventListener("input", e => { S.q=e.target.value.trim().toLowerCase(); render(); });
+  $("#showBusy").addEventListener("change", e => { S.showBusy=e.target.checked; render(); });
+  const toggle = b => { const n=b.dataset.room; S.open.has(n)?S.open.delete(n):S.open.add(n); b.setAttribute("aria-expanded", S.open.has(n)); };
+  $("#results").addEventListener("click", e => { const b=e.target.closest(".room"); if(b) toggle(b); });
+  $("#results").addEventListener("keydown", e => { const b=e.target.closest(".room");
+    if(b && (e.key==="Enter"||e.key===" ")){ e.preventDefault(); toggle(b); } });
+  document.addEventListener("keydown", e => { if(e.key!=="Escape") return;
+    document.querySelectorAll('.room[aria-expanded="true"]').forEach(toggle); });
+}
+const clampDate = d => d < mondayOf(S.first) ? S.first : (d > S.last ? mondayOf(S.last) : (d < S.first ? S.first : d));
+
+function roomState(id){
+  const all = S.byDate.get(S.date)?.get(id) || [];
+  const busy = all.filter(l => l.busy);
+  const cur = busy.find(l => l.s<=S.t && S.t<l.e);
+  // a 10-minute break between two classes is not a free slot
+  const between = !cur && busy.find(l => l.e<=S.t && S.t<l.e+10 && busy.some(n => n.s>=l.e && n.s<=l.e+10));
+  if(cur || between){
+    let end = (cur||between).e;
+    for(const l of busy) if(l.s<=end+10 && l.e>end) end=l.e;
+    return {free:false, cur:cur||between, until:end, all};
+  }
+  const next = busy.find(l => l.s>S.t);
+  const away = all.find(l => !l.busy && l.s<=S.t && S.t<l.e);
+  return {free:true, until: next ? next.s : null, away, all};
+}
+
+function progName(i){ const p=S.data.programs[i]; return p ? `${p.name}${p.info?", "+p.info:""}` : ""; }
+
+function tile(room, st){
+  const span = S.max - S.min;
+  const segs = st.all.map(l => `<i class="${l.busy?"":"lab"}" style="left:${(l.s-S.min)/span*100}%;width:${(l.e-l.s)/span*100}%"></i>`).join("");
+  let until;
+  if(st.free) until = st.until===null ? "E lirë deri në fund të ditës" : `E lirë deri në ${fmt(st.until)} (${fmtDur(st.until-S.t)})`;
+  else until = `E zënë deri në ${fmt(st.until)}: ${esc(S.data.programs[st.cur.prog]?.name||"")}`;
+  const away = st.free && st.away ? `<span class="labnote">${st.away.type==="Lab"?"Grupi është në laborator":"Grupi është në praktikë"}</span>` : "";
+  const detail = st.all.length ? st.all.map(l => `<span class="row"><span class="t">${fmt(l.s)}–${fmt(l.e)}</span> ${esc(l.text)}
+      <span class="tag ${l.busy?"":"lab"}">${l.busy?esc(l.type):esc(l.type)+", jo në këtë sallë"}</span><br><span class="m">${esc(progName(l.prog))}</span></span>`).join("")
+    : `<span class="row m">Asnjë mësim këtë ditë.</span>`;
+  return `<div role="button" tabindex="0" class="room ${st.free?"":"busy"}" data-room="${room.id}" aria-expanded="${S.open.has(room.id)}">
+    <span class="close" aria-hidden="true">✕</span>
+    <span class="name">${esc(room.name)}<span class="floor">Kati ${room.floor}</span></span>
+    <span class="until">${until}</span>${away}
+    <span class="bar">${segs}<b style="left:${(S.t-S.min)/span*100}%"></b></span>
+    <span class="detail">${detail}</span></div>`;
+}
+
+function byBuilding(list){
+  const groups = new Map();
+  for(const item of list){ const b=item[0].building; if(!groups.has(b)) groups.set(b,[]); groups.get(b).push(item); }
+  return [...groups.entries()].sort((a,b)=>a[0]-b[0]).map(([b,items]) =>
+    `<h3 class="bld">Godina ${b}</h3><div class="grid">${items.map(([r,s])=>tile(r,s)).join("")}</div>`).join("");
+}
+
+function render(){
+  const mon = mondayOf(S.date);
+  $("#days").innerHTML = [0,1,2,3,4].map(i => { const d=addDays(mon,i);
+    const off = d < S.first || d > S.last;
+    return `<button type="button" data-d="${d}" aria-pressed="${d===S.date}" class="${d===todayIso()?"today":""}" ${off?"disabled":""}>${DAYS_SHORT[i]}<span>${nice(d)}</span></button>`; }).join("");
+  $("#prevWeek").disabled = mon <= S.first;
+  $("#nextWeek").disabled = addDays(mon,7) > S.last;
+  const hasClasses = S.byDate.has(S.date);
+  $("#weeklabel").textContent = hasClasses ? "" : "Pa mësim këtë ditë";
+  $("#slider").value = S.t;
+  $("#clock").textContent = fmt(S.t); $("#clock").setAttribute("datetime", fmt(S.t));
+  const n=nowMin(), nm=$("#nowmark");
+  if(S.date===todayIso() && n>=S.min && n<=S.max){ nm.hidden=false; nm.style.left=`calc(13px + (100% - 26px) * ${(n-S.min)/(S.max-S.min)})`; } else nm.hidden=true;
+  $("#nowbtn").hidden = S.followNow;
+  const today = todayIso();
+  $("#rangeNote").innerHTML = S.followNow && (today < S.first || today > S.last)
+    ? `<div class="notice">Orari në PDF mbulon ${nice(S.first)} ${S.first.slice(0,4)} deri ${nice(S.last)} ${S.last.slice(0,4)}. Po shfaqet data më e afërt.</div>` : "";
+
+  const rooms = S.data.rooms.filter(r => (S.bld==="all" || String(r.building)===S.bld) &&
+    (!S.q || `${r.name} kati ${r.floor} godina ${r.building}`.toLowerCase().includes(S.q)));
+  const states = rooms.map(r => [r, roomState(r.id)]);
+  const free = states.filter(([,s])=>s.free).sort((a,b)=>!!a[1].away-!!b[1].away || (b[1].until??9999)-(a[1].until??9999) || a[0].floor-b[0].floor || a[0].number-b[0].number);
+  const busy = states.filter(([,s])=>!s.free).sort((a,b)=>a[1].until-b[1].until);
+  const awayCount = free.filter(([,s])=>s.away).length;
+
+  $("#summary").innerHTML = `<strong>${free.length} ${free.length===1?"auditor i lirë":"auditorë të lirë"}</strong>
+    <span>${DAYS[weekday(S.date)]}, ${nice(S.date)}${S.followNow?", tani":""}. ${busy.length} të zënë${awayCount?`, ${awayCount} me grupin në laborator ose praktikë`:""}.</span>`;
+
+  let html = `<section class="group"><h2>Auditorë të lirë</h2><p class="sub">Renditur sipas kohës që qëndrojnë të lirë, ato me grupin në laborator në fund. Prek një për orarin e plotë të ditës.</p>${
+    free.length ? byBuilding(free) : `<div class="empty">Asnjë auditor i lirë në këtë orë. Lëviz orën më sipër për të parë kur lirohen.</div>`}</section>`;
+  if(S.showBusy) html += `<section class="group"><h2>Të zënë</h2><p class="sub">Kur lirohen dhe kush është brenda.</p>${
+    busy.length ? byBuilding(busy) : `<div class="empty">Asnjë auditor i zënë në këtë orë.</div>`}</section>`;
+  if(!rooms.length) html = `<div class="empty" style="margin-top:24px">Asnjë auditor nuk përputhet me “${esc(S.q)}”.</div>`;
+  $("#results").innerHTML = html;
+}
+load();
+</script>
+</body>
+</html>
